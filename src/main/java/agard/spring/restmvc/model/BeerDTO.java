@@ -1,5 +1,7 @@
 package agard.spring.restmvc.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -11,6 +13,9 @@ import java.util.UUID;
 public class BeerDTO {
     private UUID id;
     private Integer version;
+
+    @NotBlank
+    @NotNull
     private String beerName;
     private BeerStyle beerStyle;
     private String upc;
