@@ -19,7 +19,7 @@ public class CustomerController {
 
     public static final String CUSTOMER_PATH = "/api/v1/customer/";
     public static final String CUSTOMER_ID_PARAM = "customerID";
-    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{"+ CUSTOMER_ID_PARAM +"}";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "{"+ CUSTOMER_ID_PARAM +"}";
 
 
     private final CustomerService customerService;
@@ -45,19 +45,25 @@ public class CustomerController {
 
     @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateById(@PathVariable(CUSTOMER_ID_PARAM) UUID customerId, @RequestBody CustomerDTO customer){
-        customerService.updateCustomerById(customerId, customer);
+        if(customerService.updateCustomerById(customerId, customer).isEmpty()){
+            throw new NotFoundException();
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable(CUSTOMER_ID_PARAM)UUID customerId){
-        customerService.deleteById(customerId);
+        if(!customerService.deleteById(customerId)){
+            throw new NotFoundException();
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity patchById(@PathVariable(CUSTOMER_ID_PARAM) UUID customerId, @RequestBody CustomerDTO customer){
-        customerService.patchCustomerById(customerId, customer);
+        if(customerService.patchCustomerById(customerId, customer).isEmpty()){
+            throw new NotFoundException();
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
