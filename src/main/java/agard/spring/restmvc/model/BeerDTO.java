@@ -1,7 +1,6 @@
 package agard.spring.restmvc.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -16,11 +15,24 @@ public class BeerDTO {
 
     @NotBlank
     @NotNull
+    @Size(max = 50)
     private String beerName;
+
+    @NotNull
     private BeerStyle beerStyle;
+
+    @NotBlank
+    @NotNull
+    @Size()
     private String upc;
+
+    @PositiveOrZero
     private Integer quantityOnHand;
+
+    @Positive
+    @NotNull
     private BigDecimal price;
+
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
 
