@@ -1,5 +1,6 @@
 package agard.spring.restmvc.services;
 
+import agard.spring.restmvc.domain.Customer;
 import agard.spring.restmvc.mappers.CustomerMapper;
 import agard.spring.restmvc.model.CustomerDTO;
 import agard.spring.restmvc.repositories.CustomerRepository;
@@ -8,7 +9,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,11 +26,21 @@ public class CustomerServiceJPA implements CustomerService {
 
     // Methods //
     @Override
-    public List<CustomerDTO> getCustomerList() {
-        return customerRepository.findAll()
+    public List<CustomerDTO> getCustomerList(String customerName) {
+        List<Customer> customerList;
+        if(StringUtils.hasText(customerName)){
+            customerList = listCustomersByName(customerName);
+        } else {
+            customerList = customerRepository.findAll();
+        }
+        return customerList
                 .stream()
                 .map(customerMapper::customerToCustomerDto)
                 .collect(Collectors.toList());
+    }
+
+    private List<Customer> listCustomersByName(String customerName){
+        return customerRepository.findAllByCustomerNameIsLikeIgnoreCase("%" + customerName + "%");
     }
 
     @Override
@@ -54,7 +64,10 @@ public class CustomerServiceJPA implements CustomerService {
         AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
         customerRepository.findById(customerId).ifPresentOrElse(foundCustomer -> {
             foundCustomer.setCustomerName(customer.getCustomerName());
-            foundCustomer.setLastModifiedDate(LocalDateTime.now());
+            if(StringUtils.hasText(customer.getEmail())){
+                foundCustomer.setEmail(customer.getEmail());
+            }
+
             atomicReference.set(Optional.of(
                     customerMapper.customerToCustomerDto(
                             customerRepository.save(foundCustomer))));
@@ -81,6 +94,9 @@ public class CustomerServiceJPA implements CustomerService {
             // check Name
             if(StringUtils.hasText(customer.getCustomerName())){
                 foundCustomer.setCustomerName(customer.getCustomerName());
+            }
+            if(StringUtils.hasText(customer.getEmail())){
+                foundCustomer.setEmail(customer.getEmail());
             }
 
             atomicReference.set(Optional.of(

@@ -4,8 +4,10 @@ import agard.spring.restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
@@ -49,6 +51,10 @@ public class Beer {
     @Positive
     @NotNull
     private BigDecimal price;
+
+    @CreationTimestamp
     private LocalDateTime createdDate;
+
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 }

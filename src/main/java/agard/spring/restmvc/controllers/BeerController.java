@@ -2,6 +2,7 @@ package agard.spring.restmvc.controllers;
 
 
 import agard.spring.restmvc.model.BeerDTO;
+import agard.spring.restmvc.model.BeerStyle;
 import agard.spring.restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,10 @@ public class BeerController {
     private final BeerService beerService;
 
     @GetMapping(BEER_PATH)
-    public List<BeerDTO> beersList(){
-        return beerService.getBeerList();
+    public List<BeerDTO> beersList(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false) Boolean showInventory){
+        return beerService.getBeerList(beerName, beerStyle, showInventory);
     }
 
     @GetMapping(BEER_PATH_ID)

@@ -56,7 +56,7 @@ class CustomerControllerTest {
 
     @Test
     void customersList() throws Exception {
-        given(customerService.getCustomerList()).willReturn(customerServiceImpl.getCustomerList());
+        given(customerService.getCustomerList(null)).willReturn(customerServiceImpl.getCustomerList(null));
 
         mockMvc.perform(get(CUSTOMER_PATH)
                     .accept(MediaType.APPLICATION_JSON))
@@ -67,7 +67,7 @@ class CustomerControllerTest {
 
     @Test
     void getCustomerById() throws Exception {
-        CustomerDTO testCustomer = customerServiceImpl.getCustomerList().get(0);
+        CustomerDTO testCustomer = customerServiceImpl.getCustomerList(null).get(0);
         given(customerService.getCustomerById(testCustomer.getId())).willReturn(Optional.of(testCustomer));
 
         mockMvc.perform(get(CUSTOMER_PATH_ID, testCustomer.getId())
@@ -80,12 +80,12 @@ class CustomerControllerTest {
 
     @Test
     void testCreateNewCustomer() throws Exception{
-        CustomerDTO customer  = customerServiceImpl.getCustomerList().get(0);
+        CustomerDTO customer  = customerServiceImpl.getCustomerList(null).get(0);
         customer.setId(null);
         customer.setVersion(null);
 
         given(customerService.saveNewCustomer(any(CustomerDTO.class)))
-                .willReturn(customerServiceImpl.getCustomerList().get(1));
+                .willReturn(customerServiceImpl.getCustomerList(null).get(1));
 
         mockMvc.perform(post(CUSTOMER_PATH)
                 .accept(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ class CustomerControllerTest {
 
     @Test
     void testUpdateById() throws Exception {
-        CustomerDTO customer = customerServiceImpl.getCustomerList().get(0);
+        CustomerDTO customer = customerServiceImpl.getCustomerList(null).get(0);
 
         given(customerService.updateCustomerById(any(), any())).willReturn(Optional.of(customer));
 
@@ -114,7 +114,7 @@ class CustomerControllerTest {
 
     @Test
     void testDeleteById() throws Exception {
-        CustomerDTO customer = customerServiceImpl.getCustomerList().get(0);
+        CustomerDTO customer = customerServiceImpl.getCustomerList(null).get(0);
 
         given(customerService.deleteById(any())).willReturn(true);
 
@@ -129,7 +129,7 @@ class CustomerControllerTest {
 
     @Test
     void testPatchById() throws Exception{
-        CustomerDTO customer = customerServiceImpl.getCustomerList().get(0);
+        CustomerDTO customer = customerServiceImpl.getCustomerList(null).get(0);
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("customerName", "New Name");
 
