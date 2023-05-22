@@ -1,10 +1,6 @@
 package agard.spring.restmvc.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,11 +14,12 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-public class Customer {
+public class BeerOrder {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -33,19 +30,13 @@ public class Customer {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 50)
-    @Column(length = 50)
-    private String customerName;
+    private String customerRef;
 
-    @Email
-    @Size(max = 255)
-    @Column(length = 255)
-    private String email;
+    @ManyToOne
+    private Customer customer;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    @OneToMany(mappedBy = "beerOrder")
+    private Set<BeerOrderLine> beerOrderLines;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -55,5 +46,9 @@ public class Customer {
     private LocalDateTime lastModifiedDate;
 
     @Version
-    private Integer version;
+    private Long version;
+
+    public boolean isNew(){
+        return ( this.id == null );
+    }
 }

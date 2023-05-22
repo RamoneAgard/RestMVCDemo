@@ -1,10 +1,6 @@
 package agard.spring.restmvc.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,16 +9,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-public class Customer {
+public class BeerOrderLine {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -33,19 +29,15 @@ public class Customer {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 50)
-    @Column(length = 50)
-    private String customerName;
+    private Integer orderQuantity;
 
-    @Email
-    @Size(max = 255)
-    @Column(length = 255)
-    private String email;
+    private Integer quantityAllocated;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    @ManyToOne
+    private Beer beer;
+
+    @ManyToOne
+    private BeerOrder beerOrder;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -55,5 +47,9 @@ public class Customer {
     private LocalDateTime lastModifiedDate;
 
     @Version
-    private Integer version;
+    private Long version;
+
+    public boolean isNew(){
+        return ( this.id == null );
+    }
 }

@@ -4,27 +4,21 @@ import agard.spring.restmvc.domain.Beer;
 import agard.spring.restmvc.domain.Customer;
 import agard.spring.restmvc.model.BeerCSVRecord;
 import agard.spring.restmvc.model.BeerStyle;
-import agard.spring.restmvc.model.CustomerDTO;
 import agard.spring.restmvc.repositories.BeerRepository;
 import agard.spring.restmvc.repositories.CustomerRepository;
 import agard.spring.restmvc.services.BeerCsvService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 
 @Component
