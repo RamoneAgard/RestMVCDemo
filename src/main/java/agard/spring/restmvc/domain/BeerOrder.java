@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
@@ -47,6 +46,23 @@ public class BeerOrder {
 
     @Version
     private Long version;
+
+    // Constructor //
+    public BeerOrder(UUID id, String customerRef, Customer customer, Set<BeerOrderLine> beerOrderLines, LocalDateTime createdDate, LocalDateTime lastModifiedDate, Long version) {
+        this.id = id;
+        this.customerRef = customerRef;
+        this.setCustomer(customer);
+        this.beerOrderLines = beerOrderLines;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
+        this.version = version;
+    }
+
+    //Methods //
+    public void setCustomer(Customer customer){
+        this.customer = customer;
+        customer.getBeerOrders().add(this);
+    }
 
     public boolean isNew(){
         return ( this.id == null );
