@@ -2,6 +2,7 @@ package agard.spring.restmvc.repositories;
 
 import agard.spring.restmvc.domain.Beer;
 import agard.spring.restmvc.domain.BeerOrder;
+import agard.spring.restmvc.domain.BeerOrderShipment;
 import agard.spring.restmvc.domain.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,9 +35,14 @@ class BeerOrderRepositoryTest {
         BeerOrder beerOrder = BeerOrder.builder()
                 .customerRef("Test order")
                 .customer(testCustomer)
+                .beerOrderShipment(
+                        BeerOrderShipment.builder()
+                                .trackingNumber("12345878fhn49")
+                                .build()
+                )
                 .build();
 
-        BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+        BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
         System.out.println(savedBeerOrder.getCustomerRef());
     }
 }

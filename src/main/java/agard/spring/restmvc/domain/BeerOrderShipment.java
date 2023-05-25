@@ -9,8 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -19,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Category {
+public class BeerOrderShipment {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -28,18 +26,13 @@ public class Category {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    @Column(length = 36, columnDefinition = "varchar(36)", nullable = false, updatable = false)
     private UUID id;
 
-    private String description;
+    private String trackingNumber;
 
-    @Builder.Default
-    @ManyToMany
-    @JoinTable(name = "beer_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "beer_id")
-    )
-    private Set<Beer> beers = new HashSet<>();
+    @OneToOne
+    private BeerOrder beerOrder;
 
     @CreationTimestamp
     @Column(updatable = false)

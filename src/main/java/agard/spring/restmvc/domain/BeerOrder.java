@@ -37,6 +37,9 @@ public class BeerOrder {
     @OneToMany(mappedBy = "beerOrder")
     private Set<BeerOrderLine> beerOrderLines;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private BeerOrderShipment beerOrderShipment;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdDate;
@@ -48,11 +51,12 @@ public class BeerOrder {
     private Long version;
 
     // Constructor //
-    public BeerOrder(UUID id, String customerRef, Customer customer, Set<BeerOrderLine> beerOrderLines, LocalDateTime createdDate, LocalDateTime lastModifiedDate, Long version) {
+    public BeerOrder(UUID id, String customerRef, Customer customer, Set<BeerOrderLine> beerOrderLines, BeerOrderShipment beerOrderShipment, LocalDateTime createdDate, LocalDateTime lastModifiedDate, Long version) {
         this.id = id;
         this.customerRef = customerRef;
         this.setCustomer(customer);
         this.beerOrderLines = beerOrderLines;
+        this.setBeerOrderShipment(beerOrderShipment);
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
         this.version = version;
@@ -62,6 +66,11 @@ public class BeerOrder {
     public void setCustomer(Customer customer){
         this.customer = customer;
         customer.getBeerOrders().add(this);
+    }
+
+    public void setBeerOrderShipment(BeerOrderShipment beerOrderShipment){
+        this.beerOrderShipment = beerOrderShipment;
+        beerOrderShipment.setBeerOrder(this);
     }
 
     public boolean isNew(){
