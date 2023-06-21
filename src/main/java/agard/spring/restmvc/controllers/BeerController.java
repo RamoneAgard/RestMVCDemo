@@ -20,9 +20,9 @@ import java.util.UUID;
 @RestController
 public class BeerController {
 
-    public static final String BEER_PATH = "/api/v1/beer/";
+    public static final String BEER_PATH = "/api/v1/beer";
     public static final String BEER_ID_PARAM = "beerId";
-    public static final String BEER_PATH_ID = BEER_PATH +  "{"+BEER_ID_PARAM+"}";
+    public static final String BEER_PATH_ID = BEER_PATH +  "/{"+BEER_ID_PARAM+"}";
 
 
     private final BeerService beerService;
@@ -47,7 +47,7 @@ public class BeerController {
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", BEER_PATH  + savedBeer.getId().toString());
+        headers.add("Location", BEER_PATH  + "/" + savedBeer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 

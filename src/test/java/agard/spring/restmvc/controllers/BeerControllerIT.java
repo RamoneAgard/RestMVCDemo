@@ -31,7 +31,11 @@ import static agard.spring.restmvc.controllers.BeerController.BEER_PATH_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,7 +62,8 @@ class BeerControllerIT {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+                .apply(springSecurity()).build();
     }
 
     @Test
@@ -71,6 +76,7 @@ class BeerControllerIT {
     @Test
     void testListByName() throws Exception {
         mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .queryParam("beerName", "IPA")
                         .queryParam("pageSize", "1000"))
                 .andExpect(status().isOk())
@@ -81,6 +87,7 @@ class BeerControllerIT {
     @Test
     void testListByStyle() throws Exception{
         mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("pageSize", "1000"))
                 .andExpect(status().isOk())
@@ -90,6 +97,7 @@ class BeerControllerIT {
     @Test
     void testListByNameAndStyle() throws Exception {
         mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("pageSize", "1000"))
@@ -100,6 +108,7 @@ class BeerControllerIT {
     @Test
     void testListByNameAndStyleShowInventory() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "true")
@@ -114,6 +123,7 @@ class BeerControllerIT {
     @Test
     void testListByNameAndStyleShowInventoryFalse() throws Exception {
         mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "false")
@@ -126,6 +136,7 @@ class BeerControllerIT {
     @Test
     void testListByNameAndStyleShowInventoryPaging() throws Exception {
         mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "false")
@@ -178,6 +189,7 @@ class BeerControllerIT {
 
         String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
         UUID savedUUID = UUID.fromString(locationUUID[4]);
+
 
         Beer beer = beerRepository.findById(savedUUID).get();
         assertThat(beer).isNotNull();
@@ -272,6 +284,7 @@ class BeerControllerIT {
         beerMap.put("beerName", "New Name New Name New Name New Name New Name New Name New Name");
 
         MvcResult mockMvcResult = mockMvc.perform(patch(BEER_PATH_ID, beer.getId())
+                        .with(httpBasic(BeerControllerTest.USERNAME, BeerControllerTest.PASSWORD))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beerMap)))
@@ -279,6 +292,14 @@ class BeerControllerIT {
                 .andReturn();
 
         System.out.println(mockMvcResult.getResponse().getContentAsString());
+    }
+
+    //Security //
+    @Test
+    void testUnauthenticatedRequest() throws Exception {
+        mockMvc.perform(get(BEER_PATH)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
 

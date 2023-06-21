@@ -73,10 +73,10 @@ public class BeerServiceJPA implements BeerService {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
         //get data from parameters
         if(StringUtils.hasText(beerName) && beerStyle == null){
-            beerPage = listBeersByName(beerName, null);
+            beerPage = listBeersByName(beerName, pageRequest);
         }
         else if(!StringUtils.hasText(beerName) && beerStyle != null){
-            beerPage = listBeersByStyle(beerStyle, null);
+            beerPage = listBeersByStyle(beerStyle, pageRequest);
         }
         else if (StringUtils.hasText(beerName) && beerStyle != null) {
             beerPage = listBeersByNameAndStyle(beerName, beerStyle, pageRequest);
